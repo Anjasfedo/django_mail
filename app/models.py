@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
+import os
 
 # Utils Function
 
@@ -58,6 +59,9 @@ class IncomingMail(models.Model):
                             validators=[validate_file_extension])
     agenda = models.ForeignKey(Agenda, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    
+    def file_name(self):
+        return os.path.basename(self.file.name)
 
     class Meta:
         '''Meta definition for IncomingMail.'''
@@ -79,6 +83,9 @@ class OutgoingMail(models.Model):
                             validators=[validate_file_extension])
     agenda = models.ForeignKey(Agenda, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    
+    def file_name(self):
+        return os.path.basename(self.file.name)
 
     class Meta:
         '''Meta definition for OutgoingMail.'''

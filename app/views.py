@@ -34,6 +34,8 @@ def incoming_mail(request):
 def incoming_mail_update(request, pk):
     incoming_mail = IncomingMail.objects.get(id=pk)
     form = IncomingMailForm(instance=incoming_mail)
+    form.helper.form_action = reverse_lazy(
+        'incoming_mail_update', kwargs={'pk': incoming_mail.id})
 
     if request.method == 'POST':
         form = IncomingMailForm(
@@ -47,6 +49,16 @@ def incoming_mail_update(request, pk):
     }
 
     return render(request, 'incoming_mail_update.html', context)
+
+
+def incoming_mail_delete(request, pk):
+    incoming_mail = IncomingMail.objects.get(id=pk)
+
+    if request.method == 'POST':
+        incoming_mail.delete()
+        return redirect('incoming_mail')
+
+    return redirect('incoming_mail')
 
 
 def outgoing_mail(request):
@@ -66,6 +78,36 @@ def outgoing_mail(request):
     return render(request, 'outgoing_mail.html', context)
 
 
+def outgoing_mail_update(request, pk):
+    outgoing_mail = OutgoingMail.objects.get(id=pk)
+    form = OutgoingMailForm(instance=outgoing_mail)
+    form.helper.form_action = reverse_lazy(
+        'outgoing_mail_update', kwargs={'pk': outgoing_mail.id})
+
+    if request.method == 'POST':
+        form = OutgoingMailForm(
+            request.POST, request.FILES, instance=outgoing_mail)
+        if form.is_valid():
+            form.save()
+            return redirect('outgoing_mail')
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'outgoing_mail_update.html', context)
+
+
+def outgoing_mail_delete(request, pk):
+    outgoing_mail = OutgoingMail.objects.get(id=pk)
+
+    if request.method == 'POST':
+        outgoing_mail.delete()
+        return redirect('outgoing_mail')
+
+    return redirect('outgoing_mail')
+
+
 def incoming_disposition(request):
     form = IncomingDispositionForm()
 
@@ -83,6 +125,36 @@ def incoming_disposition(request):
     return render(request, 'incoming_disposition.html', context)
 
 
+def incoming_disposition_update(request, pk):
+    incoming_disposition = IncomingDisposition.objects.get(id=pk)
+    form = IncomingDispositionForm(instance=incoming_disposition)
+    form.helper.form_action = reverse_lazy(
+        'incoming_disposition_update', kwargs={'pk': incoming_disposition.id})
+
+    if request.method == 'POST':
+        form = IncomingDispositionForm(
+            request.POST, instance=incoming_disposition)
+        if form.is_valid():
+            form.save()
+            return redirect('incoming_disposition')
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'incoming_disposition_update.html', context)
+
+
+def incoming_disposition_delete(request, pk):
+    incoming_disposition = IncomingDisposition.objects.get(id=pk)
+
+    if request.method == 'POST':
+        incoming_disposition.delete()
+        return redirect('incoming_disposition')
+
+    return redirect('incoming_disposition')
+
+
 def outgoing_disposition(request):
     form = OutgoingDispositionForm()
 
@@ -98,6 +170,36 @@ def outgoing_disposition(request):
     }
 
     return render(request, 'outgoing_disposition.html', context)
+
+
+def outgoing_disposition_update(request, pk):
+    outgoing_disposition = OutgoingDisposition.objects.get(id=pk)
+    form = OutgoingDispositionForm(instance=outgoing_disposition)
+    form.helper.form_action = reverse_lazy(
+        'outgoing_disposition_update', kwargs={'pk': outgoing_disposition.id})
+
+    if request.method == 'POST':
+        form = OutgoingDispositionForm(
+            request.POST, instance=outgoing_disposition)
+        if form.is_valid():
+            form.save()
+            return redirect('outgoing_disposition')
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'outgoing_disposition_update.html', context)
+
+
+def outgoing_disposition_delete(request, pk):
+    outgoing_disposition = OutgoingDisposition.objects.get(id=pk)
+
+    if request.method == 'POST':
+        outgoing_disposition.delete()
+        return redirect('outgoing_disposition')
+
+    return redirect('outgoing_disposition')
 
 
 def agenda(request):
@@ -120,7 +222,8 @@ def agenda(request):
 def agenda_update(request, pk):
     agenda = Agenda.objects.get(id=pk)
     form = AgendaForm(instance=agenda)
-    form.helper.form_action = reverse_lazy('agenda_update', kwargs={'pk': agenda.id})
+    form.helper.form_action = reverse_lazy(
+        'agenda_update', kwargs={'pk': agenda.id})
 
     if request.method == 'POST':
         form = AgendaForm(request.POST, instance=agenda)
@@ -134,9 +237,9 @@ def agenda_update(request, pk):
 
     return render(request, 'agenda_update.html', context)
 
+
 def agenda_delete(request, pk):
     agenda = Agenda.objects.get(id=pk)
-    print(agenda)
 
     if request.method == 'POST':
         agenda.delete()

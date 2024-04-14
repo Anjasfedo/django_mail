@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <section class="section">
+    <div class="section-header">
+      <h1>Outgoing Disposition</h1>
+      <div class="section-header-breadcrumb">
+        <div class="breadcrumb-item active"><a href="">Disposition</a></div>
+        <div class="breadcrumb-item">Outgoing Disposition</div>
+      </div>
+    </div>
+
+    <div class="section-body">
+      <h2 class="section-title">Outgoing Disposition</h2>
+      <p class="section-lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis et velit recusandae ea incidunt non quo quod culpa vel voluptatem commodi enim aspernatur quis libero distinctio, voluptatibus beatae iure accusamus!</p>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h4>Update Outgoing Disposition</h4>
+              </div>
+              <div class="card-body p-5">
+                {% crispy form %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </section>
+{% endblock %}
