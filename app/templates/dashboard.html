@@ -14,20 +14,19 @@
       <h2 class="section-title">Dashboard</h2>
       <p class="section-lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis et velit recusandae ea incidunt non quo quod culpa vel voluptatem commodi enim aspernatur quis libero distinctio, voluptatibus beatae iure accusamus!</p>
 
-      {% for form in forms %}
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h4>Advanced Table</h4>
-              </div>
-              <div class="card-body p-5">
-                {% crispy form %}
-              </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Advanced Table</h4>
+
+            </div>
+            <div class="card-body p-0">
+              
             </div>
           </div>
         </div>
-      {% endfor %}
+      </div>
     </div>
   </section>
 {% endblock %}

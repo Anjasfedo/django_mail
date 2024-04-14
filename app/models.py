@@ -26,7 +26,7 @@ def max_value_current_year(value):
 INFORMATIONS = (
     (0, 'Processing'),
     (1, 'Accepted'),
-    (1, 'Rejected'),
+    (2, 'Rejected'),
 )
 
 # Create your models here.
@@ -97,6 +97,7 @@ class IncomingDisposition(models.Model):
     note = models.CharField(max_length=200)
     mail = models.OneToOneField(
         IncomingMail, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     class Meta:
         '''Meta definition for IncomingDisposition.'''
@@ -115,6 +116,7 @@ class OutgoingDisposition(models.Model):
     note = models.CharField(max_length=200)
     mail = models.OneToOneField(
         OutgoingMail, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     class Meta:
         '''Meta definition for OutgoingDisposition.'''

@@ -1,11 +1,13 @@
 from django.shortcuts import render
-from .forms import *
+from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispositionForm, OutgoingDispositionForm
+from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
 # Create your views here.
 
 
 def dashboard(request):
     context = {
-        'forms': [AgendaForm(), IncomingMailForm(), OutgoingMailForm(), IncomingDispositionForm(), OutgoingDispositionForm()]
+        # 'forms': [AgendaForm(), IncomingMailForm(), OutgoingMailForm(), IncomingDispositionForm(), OutgoingDispositionForm()]
+        'agendas':  Agenda.objects.all()
     }
 
     return render(request, 'dashboard.html', context)
@@ -13,7 +15,8 @@ def dashboard(request):
 
 def incoming_mail(request):
     context = {
-        'form': IncomingMailForm()
+        'form': IncomingMailForm(),
+        'incoming_mails':  IncomingMail.objects.all()
     }
 
     return render(request, 'incoming_mail.html', context)
@@ -21,7 +24,8 @@ def incoming_mail(request):
 
 def outgoing_mail(request):
     context = {
-        'form': OutgoingMailForm()
+        'form': OutgoingMailForm(),
+        'outgoing_mails':  OutgoingMail.objects.all()
     }
 
     return render(request, 'outgoing_mail.html', context)
@@ -29,7 +33,8 @@ def outgoing_mail(request):
 
 def incoming_disposition(request):
     context = {
-        'form': IncomingDispositionForm()
+        'form': IncomingDispositionForm(),
+        'incoming_dispositions': IncomingDisposition.objects.all()
     }
 
     return render(request, 'incoming_disposition.html', context)
@@ -37,7 +42,8 @@ def incoming_disposition(request):
 
 def outgoing_disposition(request):
     context = {
-        'form': OutgoingDispositionForm()
+        'form': OutgoingDispositionForm(),
+        'outgoing_dispositions': OutgoingDisposition.objects.all()
     }
 
     return render(request, 'outgoing_disposition.html', context)
@@ -45,7 +51,8 @@ def outgoing_disposition(request):
 
 def agenda(request):
     context = {
-        'form': AgendaForm()
+        'form': AgendaForm(),
+        'agendas':  Agenda.objects.all()
     }
 
     return render(request, 'agenda.html', context)
