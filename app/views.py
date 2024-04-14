@@ -15,10 +15,10 @@ def dashboard(request):
 
 
 def incoming_mail(request):
-    form = IncomingMailForm()
+    form = IncomingMailForm(request.user)
 
     if request.method == 'POST':
-        form = IncomingMailForm(request.POST, request.FILES)
+        form = IncomingMailForm(request.user, request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('incoming_mail')
@@ -33,13 +33,13 @@ def incoming_mail(request):
 
 def incoming_mail_update(request, pk):
     incoming_mail = IncomingMail.objects.get(id=pk)
-    form = IncomingMailForm(instance=incoming_mail)
+    form = IncomingMailForm(request.user, instance=incoming_mail)
     form.helper.form_action = reverse_lazy(
         'incoming_mail_update', kwargs={'pk': incoming_mail.id})
 
     if request.method == 'POST':
-        form = IncomingMailForm(
-            request.POST, request.FILES, instance=incoming_mail)
+        form = IncomingMailForm(request.user,
+                                request.POST, request.FILES, instance=incoming_mail)
         if form.is_valid():
             form.save()
             return redirect('incoming_mail')
@@ -62,10 +62,10 @@ def incoming_mail_delete(request, pk):
 
 
 def outgoing_mail(request):
-    form = OutgoingMailForm()
+    form = OutgoingMailForm(request.user)
 
     if request.method == 'POST':
-        form = OutgoingMailForm(request.POST, request.FILES)
+        form = OutgoingMailForm(request.user, request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('outgoing_mail')
@@ -80,13 +80,13 @@ def outgoing_mail(request):
 
 def outgoing_mail_update(request, pk):
     outgoing_mail = OutgoingMail.objects.get(id=pk)
-    form = OutgoingMailForm(instance=outgoing_mail)
+    form = OutgoingMailForm(request.user, instance=outgoing_mail)
     form.helper.form_action = reverse_lazy(
         'outgoing_mail_update', kwargs={'pk': outgoing_mail.id})
 
     if request.method == 'POST':
-        form = OutgoingMailForm(
-            request.POST, request.FILES, instance=outgoing_mail)
+        form = OutgoingMailForm(request.user,
+                                request.POST, request.FILES, instance=outgoing_mail)
         if form.is_valid():
             form.save()
             return redirect('outgoing_mail')
@@ -109,10 +109,10 @@ def outgoing_mail_delete(request, pk):
 
 
 def incoming_disposition(request):
-    form = IncomingDispositionForm()
+    form = IncomingDispositionForm(request.user)
 
     if request.method == 'POST':
-        form = IncomingDispositionForm(request.POST)
+        form = IncomingDispositionForm(request.user, request.POST)
         if form.is_valid():
             form.save()
             return redirect('incoming_disposition')
@@ -127,13 +127,13 @@ def incoming_disposition(request):
 
 def incoming_disposition_update(request, pk):
     incoming_disposition = IncomingDisposition.objects.get(id=pk)
-    form = IncomingDispositionForm(instance=incoming_disposition)
+    form = IncomingDispositionForm(request.user, instance=incoming_disposition)
     form.helper.form_action = reverse_lazy(
         'incoming_disposition_update', kwargs={'pk': incoming_disposition.id})
 
     if request.method == 'POST':
-        form = IncomingDispositionForm(
-            request.POST, instance=incoming_disposition)
+        form = IncomingDispositionForm(request.user,
+                                       request.POST, instance=incoming_disposition)
         if form.is_valid():
             form.save()
             return redirect('incoming_disposition')
@@ -156,10 +156,10 @@ def incoming_disposition_delete(request, pk):
 
 
 def outgoing_disposition(request):
-    form = OutgoingDispositionForm()
+    form = OutgoingDispositionForm(request.user)
 
     if request.method == 'POST':
-        form = OutgoingDispositionForm(request.POST)
+        form = OutgoingDispositionForm(request.user, request.POST)
         if form.is_valid():
             form.save()
             return redirect('outgoing_disposition')
@@ -174,13 +174,13 @@ def outgoing_disposition(request):
 
 def outgoing_disposition_update(request, pk):
     outgoing_disposition = OutgoingDisposition.objects.get(id=pk)
-    form = OutgoingDispositionForm(instance=outgoing_disposition)
+    form = OutgoingDispositionForm(request.user, instance=outgoing_disposition)
     form.helper.form_action = reverse_lazy(
         'outgoing_disposition_update', kwargs={'pk': outgoing_disposition.id})
 
     if request.method == 'POST':
-        form = OutgoingDispositionForm(
-            request.POST, instance=outgoing_disposition)
+        form = OutgoingDispositionForm(request.user,
+                                       request.POST, instance=outgoing_disposition)
         if form.is_valid():
             form.save()
             return redirect('outgoing_disposition')

@@ -18,16 +18,16 @@ urlpatterns = [
 
     path('incoming-disposition/', views.incoming_disposition,
          name='incoming_disposition'),
-    path('incoming-disposition-update/<int:pk>', views.incoming_disposition_update,
+    path('incoming-disposition-update/<int:pk>/', views.incoming_disposition_update,
          name='incoming_disposition_update'),
-    path('incoming-disposition-delete/<int:pk>', views.incoming_disposition_delete,
+    path('incoming-disposition-delete/<int:pk>/', views.incoming_disposition_delete,
          name='incoming_disposition_delete'),
 
     path('outgoing-disposition/', views.outgoing_disposition,
          name='outgoing_disposition'),
-    path('outgoing-disposition-update/', views.outgoing_disposition_update,
+    path('outgoing-disposition-update//<int:pk>/', views.outgoing_disposition_update,
          name='outgoing_disposition_update'),
-    path('outgoing-disposition-delete/', views.outgoing_disposition_delete,
+    path('outgoing-disposition-delete//<int:pk>/', views.outgoing_disposition_delete,
          name='outgoing_disposition_delete'),
 
     path('agenda/', views.agenda, name='agenda'),

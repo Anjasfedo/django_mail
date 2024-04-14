@@ -55,7 +55,7 @@ class IncomingMail(models.Model):
     mail_number = models.CharField(max_length=50)
     origin = models.CharField(max_length=50)
     date = models.DateField(default=datetime.date.today)
-    file = models.FileField(null=True, upload_to="documents/%Y/%m/%d",
+    file = models.FileField(null=True, blank=True, upload_to="documents/%Y/%m/%d",
                             validators=[validate_file_extension])
     agenda = models.ForeignKey(Agenda, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
@@ -79,7 +79,7 @@ class OutgoingMail(models.Model):
     mail_number = models.CharField(max_length=50)
     origin = models.CharField(max_length=50)
     date = models.DateField(default=datetime.date.today)
-    file = models.FileField(null=True, upload_to="documents/%Y/%m/%d",
+    file = models.FileField(null=True, blank=True, upload_to="documents/%Y/%m/%d",
                             validators=[validate_file_extension])
     agenda = models.ForeignKey(Agenda, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
