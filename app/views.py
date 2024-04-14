@@ -9,3 +9,10 @@ def dashboard(request):
     }
 
     return render(request, 'dashboard.html', context)
+
+def incoming_mail(request):
+    context = {
+        'form': IncomingMailForm()
+    }
+    
+    return render(request, 'incoming_mail.html', context)

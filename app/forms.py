@@ -26,6 +26,13 @@ class AgendaForm(forms.ModelForm):
     class Meta:
         model = Agenda
         fields = '__all__'
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_action = reverse_lazy('agenda')
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class IncomingMailForm(forms.ModelForm):
@@ -35,6 +42,13 @@ class IncomingMailForm(forms.ModelForm):
     class Meta:
         model = IncomingMail
         fields = '__all__'
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_action = reverse_lazy('incoming_mail')
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class OutgoingMailForm(forms.ModelForm):
@@ -44,15 +58,36 @@ class OutgoingMailForm(forms.ModelForm):
     class Meta:
         model = OutgoingMail
         fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_action = reverse_lazy('outgoing_mail')
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class IncomingDispositionForm(forms.ModelForm):
     class Meta:
         model = IncomingDisposition
         fields = '__all__'
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_action = reverse_lazy('incoming_disposition')
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('submit', 'Submit'))
 
 
 class OutgoingDispositionForm(forms.ModelForm):
     class Meta:
         model = OutgoingDisposition
         fields = '__all__'
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_action = reverse_lazy('outgoing_disposition')
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('submit', 'Submit'))
