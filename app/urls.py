@@ -7,7 +7,7 @@ urlpatterns = [
     path('outgoing-mail', views.outgoing_mail, name='outgoing_mail'),
     path('incoming-disposition', views.incoming_disposition,
          name='incoming_disposition'),
-    path('incoming-disposition', views.incoming_disposition,
-         name='incoming_disposition'),
+    path('outgoing-disposition', views.outgoing_disposition,
+         name='outgoing_disposition'),
     path('agenda', views.agenda, name='agenda'),
 ]
