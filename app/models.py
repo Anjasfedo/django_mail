@@ -36,7 +36,7 @@ class Agenda(models.Model):
     '''Model definition for Agenda.'''
 
     year = models.IntegerField(
-        validators=[MinValueValidator(2000), max_value_current_year])
+        validators=[MinValueValidator(2000), max_value_current_year], unique=True)
 
     class Meta:
         '''Meta definition for Agenda.'''
@@ -62,8 +62,8 @@ class IncomingMail(models.Model):
     class Meta:
         '''Meta definition for IncomingMail.'''
 
-        verbose_name = 'IncomingMail'
-        verbose_name_plural = 'IncomingMails'
+        verbose_name = 'Incoming Mail'
+        verbose_name_plural = 'Incoming Mails'
 
     def __str__(self):
         return self.mail_number
@@ -83,8 +83,8 @@ class OutgoingMail(models.Model):
     class Meta:
         '''Meta definition for OutgoingMail.'''
 
-        verbose_name = 'OutgoingMail'
-        verbose_name_plural = 'OutgoingMails'
+        verbose_name = 'Outgoing Mail'
+        verbose_name_plural = 'Outgoing Mails'
 
     def __str__(self):
         return self.mail_number
@@ -102,8 +102,8 @@ class IncomingDisposition(models.Model):
     class Meta:
         '''Meta definition for IncomingDisposition.'''
 
-        verbose_name = 'IncomingDisposition'
-        verbose_name_plural = 'IncomingDispositions'
+        verbose_name = 'Incoming Disposition'
+        verbose_name_plural = 'Incoming Dispositions'
 
     def __str__(self):
         return self.get_information_display()
@@ -121,8 +121,8 @@ class OutgoingDisposition(models.Model):
     class Meta:
         '''Meta definition for OutgoingDisposition.'''
 
-        verbose_name = 'OutgoingDisposition'
-        verbose_name_plural = 'OutgoingDispositions'
+        verbose_name = 'Outgoing Disposition'
+        verbose_name_plural = 'Outgoing Dispositions'
 
     def __str__(self):
         return self.get_information_display()
