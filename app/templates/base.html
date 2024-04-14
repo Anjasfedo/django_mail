@@ -15,6 +15,9 @@
     <link rel="stylesheet" href="{% static 'assets/css/components.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}" />
+
+    {% comment %} <script src="https://unpkg.com/htmx.org@1.9.11"></script>
+    <script src="//unpkg.com/alpinejs" defer></script> {% endcomment %}
   </head>
 
   <body>
@@ -33,7 +36,13 @@
             <li class="dropdown">
               <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                 <img alt="image" src="../assets/img/avatar/avatar-1.png" class="rounded-circle mr-1" />
-                <div class="d-sm-none d-lg-inline-block">Hi, Ujang Maman</div>
+                <div class="d-sm-none d-lg-inline-block">
+                  Hi,{% if request.user %}
+                    {{request.user}}
+                  {% else %}
+                    User
+                  {% endif %}
+                </div>
               </a>
               <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-title">Logged in 5 min ago</div>
@@ -65,9 +74,9 @@
         </div>
         <footer class="main-footer">
           <div class="footer-left">
-            Copyright &copy; 2018<div class="bullet"></div>Design By <a href="https://nauval.in/">Muhamad Nauval Azhar</a>
+            Copyright &copy; 2024<div class="bullet"></div>By <a href="https://github.com/Anjasfedo/" target="_blank">M. Anjasfedo Afridiansah</a>
           </div>
-          <div class="footer-right">{{ version }}</div>
+          {% comment %} <div class="footer-right">{{ version }}</div> {% endcomment %}
         </footer>
       </div>
     </div>
@@ -85,8 +94,6 @@
     <script src="{% static 'assets/js/custom.js' %}"></script>
 
     <!-- Page Specific JS File -->
-    <script src="{% static 'assets/js/page/index-0.js' %}"></script>
-    <script src="{% static 'assets/js/page/index.js' %}"></script>
     <script src="{% static 'assets/js/page/bootstrap.modal.js' %}"></script>
     <script src="{% static 'assets/js/jquery.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
