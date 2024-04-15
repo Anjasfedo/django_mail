@@ -1,5 +1,6 @@
 from django import forms
 from django.urls import reverse_lazy
+from django.core.validators import MinValueValidator, MaxValueValidator
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
@@ -16,12 +17,16 @@ def year_choices():
 def current_year():
     return datetime.date.today().year
 
+
+def max_value_current_year(value):
+    return MaxValueValidator(current_year())(value)
+
 # Forms Classes
 
 
 class AgendaForm(forms.ModelForm):
     year = forms.TypedChoiceField(
-        coerce=int, choices=year_choices, initial=current_year)
+        coerce=int, choices=[], initial=current_year)
 
     class Meta:
         model = Agenda
@@ -34,97 +39,120 @@ class AgendaForm(forms.ModelForm):
         self.helper.form_method = 'POST'
         self.helper.add_input(Submit('submit', 'Submit'))
 
+        existing_years = Agenda.objects.values_list('year', flat=True)
+        year_choices = [(year, year) for year in range(
+            2000, current_year() + 1) if year not in existing_years]
+        self.fields['year'].choices = year_choices
 
-class IncomingMailForm(forms.ModelForm):
+
+class BaseMailForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(
         attrs={'type': 'date', 'max': dt.now().date()}))
+    file = forms.FileField(help_text='Upload PDF file of mail')
+    agenda = forms.ModelChoiceField(queryset=Agenda.objects.all().order_by(
+        'year'), empty_label='Select Agenda Year')
 
+    def __init__(self, user=None, *args, **kwargs):
+        self.user = user
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_method = 'POST'
+        self.helper.add_input(Submit('submit', 'Submit'))
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.user:
+            instance.user = self.user
+        if commit:
+            instance.save()
+        return instance
+
+
+class IncomingMailForm(BaseMailForm):
     class Meta:
         model = IncomingMail
         fields = '__all__'
         exclude = ('user',)
 
-    def __init__(self, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
+    def __init__(self, user=None, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
         self.helper.form_action = reverse_lazy('incoming_mail')
-        self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit', 'Submit'))
-        self.user = user
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.user = self.user  # Set the user for the instance
-        if commit:
-            instance.save()
-        return instance
 
 
-class OutgoingMailForm(forms.ModelForm):
-    date = forms.DateField(widget=forms.DateInput(
-        attrs={'type': 'date', 'max': dt.now().date()}))
-
+class OutgoingMailForm(BaseMailForm):
     class Meta:
         model = OutgoingMail
         fields = '__all__'
         exclude = ('user',)
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, user=None, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
+        self.helper.form_action = reverse_lazy('outgoing_mail')
+
+
+class BaseDispositionForm(forms.ModelForm):
+    def __init__(self, user=None, *args, **kwargs):
+        self.user = user
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
-        self.helper.form_action = reverse_lazy('outgoing_mail')
         self.helper.form_method = 'POST'
         self.helper.add_input(Submit('submit', 'Submit'))
-        self.user = user
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-        instance.user = self.user  # Set the user for the instance
+        instance.user = self.user
         if commit:
             instance.save()
         return instance
 
 
-class IncomingDispositionForm(forms.ModelForm):
+class IncomingDispositionCreateForm(BaseDispositionForm):
+    mail = forms.ModelChoiceField(queryset=IncomingMail.objects.exclude(
+        incomingdisposition__isnull=False), empty_label='Select Incoming Mail')
+
     class Meta:
         model = IncomingDisposition
         fields = '__all__'
         exclude = ('user',)
 
     def __init__(self, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
+        super().__init__(user, *args, **kwargs)
         self.helper.form_action = reverse_lazy('incoming_disposition')
-        self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit', 'Submit'))
-        self.user = user
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.user = self.user  # Set the user for the instance
-        if commit:
-            instance.save()
-        return instance
 
 
-class OutgoingDispositionForm(forms.ModelForm):
+class IncomingDispositionUpdateForm(BaseDispositionForm):
+    class Meta:
+        model = IncomingDisposition
+        fields = '__all__'
+        exclude = ('user', 'mail')
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
+        self.helper.form_action = reverse_lazy(
+            'incoming_disposition_update', kwargs={'pk': self.instance.id})
+
+
+class OutgoingDispositionCreateForm(BaseDispositionForm):
+    mail = forms.ModelChoiceField(queryset=OutgoingMail.objects.exclude(
+        outgoingdisposition__isnull=False), empty_label='Select Outgoing Mail')
+
     class Meta:
         model = OutgoingDisposition
         fields = '__all__'
         exclude = ('user',)
 
     def __init__(self, user, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
+        super().__init__(user, *args, **kwargs)
         self.helper.form_action = reverse_lazy('outgoing_disposition')
-        self.helper.form_method = 'POST'
-        self.helper.add_input(Submit('submit', 'Submit'))
-        self.user = user
-        # self.fields['mail'].queryset = OutgoingMail.objects.exclude(outgoingdisposition__isnull=False)
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.user = self.user  # Set the user for the instance
-        if commit:
-            instance.save()
-        return instance
+
+class OutgoingDispositionUpdateForm(BaseDispositionForm):
+    class Meta:
+        model = OutgoingDisposition
+        fields = '__all__'
+        exclude = ('user', 'mail')
+
+    def __init__(self, user, *args, **kwargs):
+        super().__init__(user, *args, **kwargs)
+        self.helper.form_action = reverse_lazy(
+            'outgoing_disposition_update', kwargs={'pk': self.instance.id})

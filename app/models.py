@@ -25,6 +25,7 @@ def max_value_current_year(value):
 
 
 INFORMATIONS = (
+    ('', 'Select Information'),
     (0, 'Processing'),
     (1, 'Accepted'),
     (2, 'Rejected'),
@@ -49,8 +50,8 @@ class Agenda(models.Model):
         return str(self.year)
 
 
-class IncomingMail(models.Model):
-    '''Model definition for IncomingMail.'''
+class BaseMail(models.Model):
+    '''Model definition for Mail.'''
 
     mail_number = models.CharField(max_length=50)
     origin = models.CharField(max_length=50)
@@ -59,52 +60,52 @@ class IncomingMail(models.Model):
                             validators=[validate_file_extension])
     agenda = models.ForeignKey(Agenda, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    
+
+    class Meta:
+        abstract = True
+
     def file_name(self):
         return os.path.basename(self.file.name)
 
+    def __str__(self):
+        return self.mail_number
+
+
+class IncomingMail(BaseMail):
     class Meta:
         '''Meta definition for IncomingMail.'''
 
         verbose_name = 'Incoming Mail'
         verbose_name_plural = 'Incoming Mails'
 
-    def __str__(self):
-        return self.mail_number
 
-
-class OutgoingMail(models.Model):
-    '''Model definition for OutgoingMail.'''
-
-    mail_number = models.CharField(max_length=50)
-    origin = models.CharField(max_length=50)
-    date = models.DateField(default=datetime.date.today)
-    file = models.FileField(null=True, blank=True, upload_to="documents/%Y/%m/%d",
-                            validators=[validate_file_extension])
-    agenda = models.ForeignKey(Agenda, null=True, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    
-    def file_name(self):
-        return os.path.basename(self.file.name)
-
+class OutgoingMail(BaseMail):
     class Meta:
         '''Meta definition for OutgoingMail.'''
 
         verbose_name = 'Outgoing Mail'
         verbose_name_plural = 'Outgoing Mails'
 
-    def __str__(self):
-        return self.mail_number
 
-
-class IncomingDisposition(models.Model):
-    '''Model definition for IncomingDisposition.'''
+class BaseDisposition(models.Model):
+    '''Model definition for Disposition.'''
 
     information = models.PositiveSmallIntegerField(choices=INFORMATIONS)
     note = models.CharField(max_length=200)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.get_information_display()
+
+
+class IncomingDisposition(BaseDisposition):
+    '''Model definition for IncomingDisposition.'''
+
     mail = models.OneToOneField(
         IncomingMail, null=True, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     class Meta:
         '''Meta definition for IncomingDisposition.'''
@@ -112,24 +113,15 @@ class IncomingDisposition(models.Model):
         verbose_name = 'Incoming Disposition'
         verbose_name_plural = 'Incoming Dispositions'
 
-    def __str__(self):
-        return self.get_information_display()
 
-
-class OutgoingDisposition(models.Model):
+class OutgoingDisposition(BaseDisposition):
     '''Model definition for OutgoingDisposition.'''
 
-    information = models.PositiveSmallIntegerField(choices=INFORMATIONS)
-    note = models.CharField(max_length=200)
     mail = models.OneToOneField(
         OutgoingMail, null=True, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
 
     class Meta:
         '''Meta definition for OutgoingDisposition.'''
 
         verbose_name = 'Outgoing Disposition'
         verbose_name_plural = 'Outgoing Dispositions'
-
-    def __str__(self):
-        return self.get_information_display()

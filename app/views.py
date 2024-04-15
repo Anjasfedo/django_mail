@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispositionForm, OutgoingDispositionForm
+from django.http import HttpResponse
+from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispositionCreateForm, IncomingDispositionUpdateForm, OutgoingDispositionCreateForm, OutgoingDispositionUpdateForm
 from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
+from .resources import IncomingMailResource, OutgoingMailResource, IncomingDispositionResource, OutgoingDispositionResource, IncomingAgendaDetailResource, OutgoingAgendaDetailResource
+
 # Create your views here.
 
 
@@ -61,6 +64,17 @@ def incoming_mail_delete(request, pk):
     return redirect('incoming_mail')
 
 
+def incoming_mail_export(request):
+    incoming_mail_resources = IncomingMailResource()
+    dataset = incoming_mail_resources.export()
+
+    response = HttpResponse(
+        dataset.xls, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="Incoming_mail.xls"'
+
+    return response
+
+
 def outgoing_mail(request):
     form = OutgoingMailForm(request.user)
 
@@ -108,11 +122,22 @@ def outgoing_mail_delete(request, pk):
     return redirect('outgoing_mail')
 
 
+def outgoing_mail_export(request):
+    outgoing_mail_resources = OutgoingMailResource()
+    dataset = outgoing_mail_resources.export()
+
+    response = HttpResponse(
+        dataset.xls, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="Outgoing_mail.xls"'
+
+    return response
+
+
 def incoming_disposition(request):
-    form = IncomingDispositionForm(request.user)
+    form = IncomingDispositionCreateForm(request.user)
 
     if request.method == 'POST':
-        form = IncomingDispositionForm(request.user, request.POST)
+        form = IncomingDispositionCreateForm(request.user, request.POST)
         if form.is_valid():
             form.save()
             return redirect('incoming_disposition')
@@ -127,13 +152,12 @@ def incoming_disposition(request):
 
 def incoming_disposition_update(request, pk):
     incoming_disposition = IncomingDisposition.objects.get(id=pk)
-    form = IncomingDispositionForm(request.user, instance=incoming_disposition)
-    form.helper.form_action = reverse_lazy(
-        'incoming_disposition_update', kwargs={'pk': incoming_disposition.id})
+    form = IncomingDispositionUpdateForm(
+        request.user, instance=incoming_disposition)
 
     if request.method == 'POST':
-        form = IncomingDispositionForm(request.user,
-                                       request.POST, instance=incoming_disposition)
+        form = IncomingDispositionUpdateForm(request.user,
+                                             request.POST, instance=incoming_disposition)
         if form.is_valid():
             form.save()
             return redirect('incoming_disposition')
@@ -155,11 +179,22 @@ def incoming_disposition_delete(request, pk):
     return redirect('incoming_disposition')
 
 
+def incoming_disposition_export(request):
+    incoming_disposition_resources = IncomingDispositionResource()
+    dataset = incoming_disposition_resources.export()
+
+    response = HttpResponse(
+        dataset.xls, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="Incoming_disposition.xls"'
+
+    return response
+
+
 def outgoing_disposition(request):
-    form = OutgoingDispositionForm(request.user)
+    form = OutgoingDispositionCreateForm(request.user)
 
     if request.method == 'POST':
-        form = OutgoingDispositionForm(request.user, request.POST)
+        form = OutgoingDispositionCreateForm(request.user, request.POST)
         if form.is_valid():
             form.save()
             return redirect('outgoing_disposition')
@@ -174,13 +209,14 @@ def outgoing_disposition(request):
 
 def outgoing_disposition_update(request, pk):
     outgoing_disposition = OutgoingDisposition.objects.get(id=pk)
-    form = OutgoingDispositionForm(request.user, instance=outgoing_disposition)
+    form = OutgoingDispositionUpdateForm(
+        request.user, instance=outgoing_disposition)
     form.helper.form_action = reverse_lazy(
         'outgoing_disposition_update', kwargs={'pk': outgoing_disposition.id})
 
     if request.method == 'POST':
-        form = OutgoingDispositionForm(request.user,
-                                       request.POST, instance=outgoing_disposition)
+        form = OutgoingDispositionUpdateForm(request.user,
+                                             request.POST, instance=outgoing_disposition)
         if form.is_valid():
             form.save()
             return redirect('outgoing_disposition')
@@ -202,6 +238,17 @@ def outgoing_disposition_delete(request, pk):
     return redirect('outgoing_disposition')
 
 
+def outgoing_disposition_export(request):
+    outgoing_disposition_resources = OutgoingDispositionResource()
+    dataset = outgoing_disposition_resources.export()
+
+    response = HttpResponse(
+        dataset.xls, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="Outgoing_disposition.xls"'
+
+    return response
+
+
 def agenda(request):
     form = AgendaForm()
 
@@ -219,23 +266,60 @@ def agenda(request):
     return render(request, 'agenda.html', context)
 
 
-def agenda_update(request, pk):
-    agenda = Agenda.objects.get(id=pk)
-    form = AgendaForm(instance=agenda)
-    form.helper.form_action = reverse_lazy(
-        'agenda_update', kwargs={'pk': agenda.id})
+def agenda_detail(request, pk):
+    incoming_mails = IncomingMail.objects.filter(agenda_id=pk)
+    incoming_dispositions = IncomingDisposition.objects.filter(
+        mail__agenda_id=pk)
 
-    if request.method == 'POST':
-        form = AgendaForm(request.POST, instance=agenda)
-        if form.is_valid():
-            form.save()
-            return redirect('agenda')
+    outgoing_mails = OutgoingMail.objects.filter(agenda_id=pk)
+    outgoing_dispositions = OutgoingDisposition.objects.filter(
+        mail__agenda_id=pk)
 
     context = {
-        'form': form,
+        'incoming_datas': zip(incoming_mails, incoming_dispositions),
+        'outgoing_datas': zip(outgoing_mails, outgoing_dispositions),
+        'pk': pk
     }
 
-    return render(request, 'agenda_update.html', context)
+    return render(request, 'agenda_detail.html', context)
+
+
+def agenda_detail_incoming_export(request, pk):
+    incoming_mails = IncomingMail.objects.filter(agenda_id=pk)
+    incoming_dispositions = IncomingDisposition.objects.filter(
+        mail__agenda_id=pk)
+
+    # Zip incoming mails and dispositions
+    incoming_data = zip(incoming_mails, incoming_dispositions)
+
+    # Create an instance of the resource with incoming data
+    resource = IncomingAgendaDetailResource()
+    dataset = resource.export(queryset=incoming_data)
+
+    response = HttpResponse(
+        dataset.xls, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="incoming_agenda_detail.xls"'
+
+    return response
+
+
+def agenda_detail_outgoing_export(request, pk):
+    outgoing_mails = OutgoingMail.objects.filter(agenda_id=pk)
+    outgoing_dispositions = OutgoingDisposition.objects.filter(
+        mail__agenda_id=pk)
+
+    # Zip outgoing mails and dispositions
+    outgoing_data = zip(outgoing_mails, outgoing_dispositions)
+
+    # Create an instance of the resource with outgoing data
+    resource = OutgoingAgendaDetailResource()
+    dataset = resource.export(queryset=outgoing_data)
+
+    response = HttpResponse(
+        dataset.xls, content_type='application/vnd.ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="outgoing_agenda_detail.xls"'
+
+    return response
 
 
 def agenda_delete(request, pk):

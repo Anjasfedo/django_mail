@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     
     'crispy_forms',
     'crispy_bootstrap4',
+    
+    'import_export',
         
     'app',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'user.middleware.IsAuthPageMiddleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -139,3 +143,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# Import Export
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True

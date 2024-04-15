@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/css/components.css' %}" />
     <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}" />
-    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}" />
+    {% comment %} <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}" /> {% endcomment %}
 
     {% comment %} <script src="https://unpkg.com/htmx.org@1.9.11"></script>
     <script src="//unpkg.com/alpinejs" defer></script> {% endcomment %}
@@ -22,6 +22,11 @@
 
   <body>
     <div id="app">
+      {% if is_auth_page == True %}
+      {% block content_2 %}
+        
+      {% endblock content_2 %}
+      {% else %}
       <div class="main-wrapper">
         <div class="navbar-bg"></div>
         <nav class="navbar navbar-expand-lg main-navbar">
@@ -35,7 +40,7 @@
           <ul class="navbar-nav navbar-right">
             <li class="dropdown">
               <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                <img alt="image" src="../assets/img/avatar/avatar-1.png" class="rounded-circle mr-1" />
+                <img alt="image" src="{% static 'media/img/avatar/avatar-1.png' %}" class="rounded-circle mr-1" />
                 <div class="d-sm-none d-lg-inline-block">
                   Hi,{% if request.user %}
                     {{request.user}}
@@ -46,10 +51,10 @@
               </a>
               <div class="dropdown-menu dropdown-menu-right">
                 <div class="dropdown-title">Logged in 5 min ago</div>
-                <a href="features-profile.html" class="dropdown-item has-icon"><i class="far fa-user"></i> Profile</a>
-                <a href="features-settings.html" class="dropdown-item has-icon"><i class="fas fa-cog"></i> Settings</a>
+                <a href="#" class="dropdown-item has-icon"><i class="far fa-user"></i> Profile</a>
+                <a href="#" class="dropdown-item has-icon"><i class="fas fa-cog"></i> Settings</a>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item has-icon text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="{% url 'user_logout' %}" class="dropdown-item has-icon text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
               </div>
             </li>
           </ul>
@@ -57,10 +62,10 @@
         <div class="main-sidebar">
           <aside id="sidebar-wrapper">
             <div class="sidebar-brand">
-              <a href="index.html">Mail</a>
+              <a href="#">Mail</a>
             </div>
             <div class="sidebar-brand sidebar-brand-sm">
-              <a href="index.html">St</a>
+              <a href="#">M</a>
             </div>
             {% include 'menu.html' %}
           </aside>
@@ -74,11 +79,12 @@
         </div>
         <footer class="main-footer">
           <div class="footer-left">
-            Copyright &copy; 2024<div class="bullet"></div>By <a href="https://github.com/Anjasfedo/" target="_blank">M. Anjasfedo Afridiansah</a>
+            Copyright &copy; 2024<div class="bullet"></div>By <a href="https://github.com/Anjasfedo/" target="_blank">Anjasfedo</a>
           </div>
           {% comment %} <div class="footer-right">{{ version }}</div> {% endcomment %}
         </footer>
       </div>
+      {% endif %}
     </div>
 
     <!-- General JS Scripts -->
@@ -94,8 +100,8 @@
     <script src="{% static 'assets/js/custom.js' %}"></script>
 
     <!-- Page Specific JS File -->
-    <script src="{% static 'assets/js/page/bootstrap.modal.js' %}"></script>
+    {% comment %} <script src="{% static 'assets/js/page/bootstrap.modal.js' %}"></script>
     <script src="{% static 'assets/js/jquery.js' %}"></script>
-    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script> {% endcomment %}
   </body>
 </html>
