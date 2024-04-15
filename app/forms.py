@@ -48,6 +48,9 @@ class AgendaForm(forms.ModelForm):
 class BaseMailForm(forms.ModelForm):
     date = forms.DateField(widget=forms.DateInput(
         attrs={'type': 'date', 'max': dt.now().date()}))
+    file = forms.FileField(help_text='Upload PDF file of mail')
+    agenda = forms.ModelChoiceField(queryset=Agenda.objects.all().order_by(
+        'year'), empty_label='Select Agenda Year')
 
     def __init__(self, user=None, *args, **kwargs):
         self.user = user
@@ -104,6 +107,9 @@ class BaseDispositionForm(forms.ModelForm):
 
 
 class IncomingDispositionCreateForm(BaseDispositionForm):
+    mail = forms.ModelChoiceField(queryset=IncomingMail.objects.exclude(
+        incomingdisposition__isnull=False), empty_label='Select Incoming Mail')
+
     class Meta:
         model = IncomingDisposition
         fields = '__all__'
@@ -112,8 +118,6 @@ class IncomingDispositionCreateForm(BaseDispositionForm):
     def __init__(self, user, *args, **kwargs):
         super().__init__(user, *args, **kwargs)
         self.helper.form_action = reverse_lazy('incoming_disposition')
-        self.fields['mail'].queryset = IncomingMail.objects.exclude(
-            incomingdisposition__isnull=False)
 
 
 class IncomingDispositionUpdateForm(BaseDispositionForm):
@@ -129,6 +133,9 @@ class IncomingDispositionUpdateForm(BaseDispositionForm):
 
 
 class OutgoingDispositionCreateForm(BaseDispositionForm):
+    mail = forms.ModelChoiceField(queryset=OutgoingMail.objects.exclude(
+        outgoingdisposition__isnull=False), empty_label='Select Outgoing Mail')
+
     class Meta:
         model = OutgoingDisposition
         fields = '__all__'
@@ -137,8 +144,6 @@ class OutgoingDispositionCreateForm(BaseDispositionForm):
     def __init__(self, user, *args, **kwargs):
         super().__init__(user, *args, **kwargs)
         self.helper.form_action = reverse_lazy('outgoing_disposition')
-        self.fields['mail'].queryset = OutgoingMail.objects.exclude(
-            outgoingdisposition__isnull=False)
 
 
 class OutgoingDispositionUpdateForm(BaseDispositionForm):

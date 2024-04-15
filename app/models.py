@@ -25,6 +25,7 @@ def max_value_current_year(value):
 
 
 INFORMATIONS = (
+    ('', 'Select Information'),
     (0, 'Processing'),
     (1, 'Accepted'),
     (2, 'Rejected'),
