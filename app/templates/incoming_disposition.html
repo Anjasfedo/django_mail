@@ -36,14 +36,9 @@
             <div class="card-header">
               <h4>Incoming Mail Table</h4>
               <div class="card-header-form">
-                {% comment %} <form>
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search" />
-                    <div class="input-group-btn">
-                      <button class="btn btn-primary"><i class="fas fa-search"></i></button>
-                    </div>
-                  </div>
-                </form> {% endcomment %}
+                <div class="input-group-btn">
+                  <a href="{% url 'incoming_disposition_export' %}" class="btn btn-primary"><i class="far fa-file-excel mx-1"></i><span>Export excel</span></a>
+                </div>
               </div>
             </div>
             <div class="card-body p-3">

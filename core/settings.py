@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     
     'crispy_forms',
     'crispy_bootstrap4',
+    
+    'import_export',
         
     'app',
 ]
@@ -139,3 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
+
+# Import Export
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True
