@@ -9,8 +9,15 @@ def user_login(request):
     
     if request.method == 'POST':
         form = UserLoginForm(data=request.POST)
+        
         if form.is_valid():
+            remember_me = form.cleaned_data.get('remember_me')
+            
             login(request, form.get_user())
+            
+            if not remember_me:
+                    request.session.set_expiry(0)  # <-- Here if the remember me is False, that is why expiry is set to 0 seconds. So it will automatically close the session after the browser is closed.
+            
             return redirect('dashboard')
     
     context = {
