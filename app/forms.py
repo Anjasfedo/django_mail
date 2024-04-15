@@ -1,5 +1,6 @@
 from django import forms
 from django.urls import reverse_lazy
+from django.core.validators import MinValueValidator, MaxValueValidator
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
@@ -16,12 +17,16 @@ def year_choices():
 def current_year():
     return datetime.date.today().year
 
+
+def max_value_current_year(value):
+    return MaxValueValidator(current_year())(value)
+
 # Forms Classes
 
 
 class AgendaForm(forms.ModelForm):
     year = forms.TypedChoiceField(
-        coerce=int, choices=year_choices, initial=current_year)
+        coerce=int, choices=[], initial=current_year)
 
     class Meta:
         model = Agenda
@@ -33,6 +38,11 @@ class AgendaForm(forms.ModelForm):
         self.helper.form_action = reverse_lazy('agenda')
         self.helper.form_method = 'POST'
         self.helper.add_input(Submit('submit', 'Submit'))
+
+        existing_years = Agenda.objects.values_list('year', flat=True)
+        year_choices = [(year, year) for year in range(
+            2000, current_year() + 1) if year not in existing_years]
+        self.fields['year'].choices = year_choices
 
 
 class BaseMailForm(forms.ModelForm):
