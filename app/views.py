@@ -1,22 +1,23 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.http import HttpResponse
-from django.core.cache.backends.base import DEFAULT_TIMEOUT
-from django.conf import settings
-from django.views.decorators.cache import cache_page
+# from django.core.cache.backends.base import DEFAULT_TIMEOUT
+# from django.conf import settings
+# from django.views.decorators.cache import cache_page
 from django.contrib.auth.models import User
 from django.db.models import Count
 from django.db.models.functions import ExtractWeekDay
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from django.shortcuts import get_object_or_404
 from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispositionCreateForm, IncomingDispositionUpdateForm, OutgoingDispositionCreateForm, OutgoingDispositionUpdateForm, UserProfileForm
 from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
 from .resources import IncomingMailResource, OutgoingMailResource, IncomingDispositionResource, OutgoingDispositionResource, IncomingAgendaDetailResource, OutgoingAgendaDetailResource
 import datetime
 
 # Cache Setup
-CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+# CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 # Create your views here.
 
@@ -123,7 +124,7 @@ def incoming_mail(request):
 
 @login_required
 def incoming_mail_update(request, pk):
-    incoming_mail = IncomingMail.objects.get(id=pk)
+    incoming_mail = get_object_or_404(IncomingMail, pk=pk)
     form = IncomingMailForm(request.user, instance=incoming_mail)
     form.helper.form_action = reverse_lazy(
         'incoming_mail_update', kwargs={'pk': incoming_mail.id})
@@ -143,7 +144,7 @@ def incoming_mail_update(request, pk):
 
 @login_required
 def incoming_mail_delete(request, pk):
-    incoming_mail = IncomingMail.objects.get(id=pk)
+    incoming_mail = get_object_or_404(IncomingMail, pk=pk)
 
     if request.method == 'POST':
         incoming_mail.delete()
@@ -181,7 +182,7 @@ def outgoing_mail(request):
 
 @login_required
 def outgoing_mail_update(request, pk):
-    outgoing_mail = OutgoingMail.objects.get(id=pk)
+    outgoing_mail = get_object_or_404(OutgoingMail, pk=pk)
     form = OutgoingMailForm(request.user, instance=outgoing_mail)
     form.helper.form_action = reverse_lazy(
         'outgoing_mail_update', kwargs={'pk': outgoing_mail.id})
@@ -201,7 +202,7 @@ def outgoing_mail_update(request, pk):
 
 @login_required
 def outgoing_mail_delete(request, pk):
-    outgoing_mail = OutgoingMail.objects.get(id=pk)
+    outgoing_mail = get_object_or_404(OutgoingMail, pk=pk)
 
     if request.method == 'POST':
         outgoing_mail.delete()
@@ -239,7 +240,7 @@ def incoming_disposition(request):
 
 @login_required
 def incoming_disposition_update(request, pk):
-    incoming_disposition = IncomingDisposition.objects.get(id=pk)
+    incoming_disposition = get_object_or_404(IncomingDisposition, pk=pk)
     form = IncomingDispositionUpdateForm(
         request.user, instance=incoming_disposition)
 
@@ -258,7 +259,7 @@ def incoming_disposition_update(request, pk):
 
 @login_required
 def incoming_disposition_delete(request, pk):
-    incoming_disposition = IncomingDisposition.objects.get(id=pk)
+    incoming_disposition = get_object_or_404(IncomingDisposition, pk=pk)
 
     if request.method == 'POST':
         incoming_disposition.delete()
@@ -296,7 +297,7 @@ def outgoing_disposition(request):
 
 @login_required
 def outgoing_disposition_update(request, pk):
-    outgoing_disposition = OutgoingDisposition.objects.get(id=pk)
+    outgoing_disposition = get_object_or_404(OutgoingDisposition, pk=pk)
     form = OutgoingDispositionUpdateForm(
         request.user, instance=outgoing_disposition)
     form.helper.form_action = reverse_lazy(
@@ -317,7 +318,7 @@ def outgoing_disposition_update(request, pk):
 
 @login_required
 def outgoing_disposition_delete(request, pk):
-    outgoing_disposition = OutgoingDisposition.objects.get(id=pk)
+    outgoing_disposition = get_object_or_404(OutgoingDisposition, pk=pk)
 
     if request.method == 'POST':
         outgoing_disposition.delete()
@@ -411,7 +412,7 @@ def agenda_detail_outgoing_export(request, pk):
 
 @login_required
 def agenda_delete(request, pk):
-    agenda = Agenda.objects.get(id=pk)
+    agenda = get_object_or_404(Agenda, pk=pk)
 
     if request.method == 'POST':
         agenda.delete()

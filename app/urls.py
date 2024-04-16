@@ -31,9 +31,9 @@ urlpatterns = [
 
     path('outgoing-disposition/', views.outgoing_disposition,
          name='outgoing_disposition'),
-    path('outgoing-disposition-update//<int:pk>/', views.outgoing_disposition_update,
+    path('outgoing-disposition-update/<int:pk>/', views.outgoing_disposition_update,
          name='outgoing_disposition_update'),
-    path('outgoing-disposition-delete//<int:pk>/', views.outgoing_disposition_delete,
+    path('outgoing-disposition-delete/<int:pk>/', views.outgoing_disposition_delete,
          name='outgoing_disposition_delete'),
     path('outgoing-disposition-export', views.outgoing_disposition_export,
          name='outgoing_disposition_export'),
