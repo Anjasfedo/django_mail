@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'import_export',
         
     'app',
-    'user',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'user.middleware.IsAuthPageMiddleware'
+    # 'accounts.middleware.IsAuthPageMiddleware',
+    'accounts.middleware.RedirectAuthenticatedUserMiddleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -165,7 +166,7 @@ IMPORT_EXPORT_USE_TRANSACTIONS = True
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://127.0.0.1:6379/2",
             "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },

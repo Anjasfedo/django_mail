@@ -8,7 +8,9 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from django.db.models.functions import ExtractWeekDay
 from django.utils import timezone
-from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispositionCreateForm, IncomingDispositionUpdateForm, OutgoingDispositionCreateForm, OutgoingDispositionUpdateForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispositionCreateForm, IncomingDispositionUpdateForm, OutgoingDispositionCreateForm, OutgoingDispositionUpdateForm, UserProfileForm
 from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
 from .resources import IncomingMailResource, OutgoingMailResource, IncomingDispositionResource, OutgoingDispositionResource, IncomingAgendaDetailResource, OutgoingAgendaDetailResource
 import datetime
@@ -18,8 +20,8 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 # Create your views here.
 
-
-@cache_page(CACHE_TTL)
+@login_required
+# @cache_page(CACHE_TTL)
 def dashboard(request):
     current_year = datetime.date.today().year
     today = timezone.now().date()
@@ -102,7 +104,7 @@ def dashboard(request):
 
     return render(request, 'dashboard.html', context)
 
-
+@login_required
 def incoming_mail(request):
     form = IncomingMailForm(request.user)
 
@@ -119,7 +121,7 @@ def incoming_mail(request):
 
     return render(request, 'incoming_mail.html', context)
 
-
+@login_required
 def incoming_mail_update(request, pk):
     incoming_mail = IncomingMail.objects.get(id=pk)
     form = IncomingMailForm(request.user, instance=incoming_mail)
@@ -139,7 +141,7 @@ def incoming_mail_update(request, pk):
 
     return render(request, 'incoming_mail_update.html', context)
 
-
+@login_required
 def incoming_mail_delete(request, pk):
     incoming_mail = IncomingMail.objects.get(id=pk)
 
@@ -149,7 +151,7 @@ def incoming_mail_delete(request, pk):
 
     return redirect('incoming_mail')
 
-
+@login_required
 def incoming_mail_export(request):
     incoming_mail_resources = IncomingMailResource()
     dataset = incoming_mail_resources.export()
@@ -160,7 +162,7 @@ def incoming_mail_export(request):
 
     return response
 
-
+@login_required
 def outgoing_mail(request):
     form = OutgoingMailForm(request.user)
 
@@ -177,7 +179,7 @@ def outgoing_mail(request):
 
     return render(request, 'outgoing_mail.html', context)
 
-
+@login_required
 def outgoing_mail_update(request, pk):
     outgoing_mail = OutgoingMail.objects.get(id=pk)
     form = OutgoingMailForm(request.user, instance=outgoing_mail)
@@ -197,7 +199,7 @@ def outgoing_mail_update(request, pk):
 
     return render(request, 'outgoing_mail_update.html', context)
 
-
+@login_required
 def outgoing_mail_delete(request, pk):
     outgoing_mail = OutgoingMail.objects.get(id=pk)
 
@@ -207,7 +209,7 @@ def outgoing_mail_delete(request, pk):
 
     return redirect('outgoing_mail')
 
-
+@login_required
 def outgoing_mail_export(request):
     outgoing_mail_resources = OutgoingMailResource()
     dataset = outgoing_mail_resources.export()
@@ -218,7 +220,7 @@ def outgoing_mail_export(request):
 
     return response
 
-
+@login_required
 def incoming_disposition(request):
     form = IncomingDispositionCreateForm(request.user)
 
@@ -235,7 +237,7 @@ def incoming_disposition(request):
 
     return render(request, 'incoming_disposition.html', context)
 
-
+@login_required
 def incoming_disposition_update(request, pk):
     incoming_disposition = IncomingDisposition.objects.get(id=pk)
     form = IncomingDispositionUpdateForm(
@@ -254,7 +256,7 @@ def incoming_disposition_update(request, pk):
 
     return render(request, 'incoming_disposition_update.html', context)
 
-
+@login_required
 def incoming_disposition_delete(request, pk):
     incoming_disposition = IncomingDisposition.objects.get(id=pk)
 
@@ -264,7 +266,7 @@ def incoming_disposition_delete(request, pk):
 
     return redirect('incoming_disposition')
 
-
+@login_required
 def incoming_disposition_export(request):
     incoming_disposition_resources = IncomingDispositionResource()
     dataset = incoming_disposition_resources.export()
@@ -275,7 +277,7 @@ def incoming_disposition_export(request):
 
     return response
 
-
+@login_required
 def outgoing_disposition(request):
     form = OutgoingDispositionCreateForm(request.user)
 
@@ -292,7 +294,7 @@ def outgoing_disposition(request):
 
     return render(request, 'outgoing_disposition.html', context)
 
-
+@login_required
 def outgoing_disposition_update(request, pk):
     outgoing_disposition = OutgoingDisposition.objects.get(id=pk)
     form = OutgoingDispositionUpdateForm(
@@ -313,7 +315,7 @@ def outgoing_disposition_update(request, pk):
 
     return render(request, 'outgoing_disposition_update.html', context)
 
-
+@login_required
 def outgoing_disposition_delete(request, pk):
     outgoing_disposition = OutgoingDisposition.objects.get(id=pk)
 
@@ -323,7 +325,7 @@ def outgoing_disposition_delete(request, pk):
 
     return redirect('outgoing_disposition')
 
-
+@login_required
 def outgoing_disposition_export(request):
     outgoing_disposition_resources = OutgoingDispositionResource()
     dataset = outgoing_disposition_resources.export()
@@ -334,7 +336,7 @@ def outgoing_disposition_export(request):
 
     return response
 
-
+@login_required
 def agenda(request):
     form = AgendaForm()
 
@@ -351,7 +353,7 @@ def agenda(request):
 
     return render(request, 'agenda.html', context)
 
-
+@login_required
 def agenda_detail(request, pk):
     incoming_mails = IncomingMail.objects.filter(agenda_id=pk)
     incoming_dispositions = IncomingDisposition.objects.filter(
@@ -369,7 +371,7 @@ def agenda_detail(request, pk):
 
     return render(request, 'agenda_detail.html', context)
 
-
+@login_required
 def agenda_detail_incoming_export(request, pk):
     incoming_mails = IncomingMail.objects.filter(agenda_id=pk)
     incoming_dispositions = IncomingDisposition.objects.filter(
@@ -388,7 +390,7 @@ def agenda_detail_incoming_export(request, pk):
 
     return response
 
-
+@login_required
 def agenda_detail_outgoing_export(request, pk):
     outgoing_mails = OutgoingMail.objects.filter(agenda_id=pk)
     outgoing_dispositions = OutgoingDisposition.objects.filter(
@@ -407,7 +409,7 @@ def agenda_detail_outgoing_export(request, pk):
 
     return response
 
-
+@login_required
 def agenda_delete(request, pk):
     agenda = Agenda.objects.get(id=pk)
 
@@ -416,3 +418,22 @@ def agenda_delete(request, pk):
         return redirect('agenda')
 
     return redirect('agenda')
+
+
+@login_required
+def user_profile_update(request):
+    user = request.user
+    form = UserProfileForm(instance=request.user)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            logout(request)
+            return redirect('user_profile_update')
+
+    context = {
+        'form': form
+    }
+
+    return render(request, 'user_profile_update.html', context)

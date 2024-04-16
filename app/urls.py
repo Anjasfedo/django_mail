@@ -46,4 +46,5 @@ urlpatterns = [
          views.agenda_detail_outgoing_export, name='agenda_detail_outgoing_export'),
     path('agenda-delete/<int:pk>/', views.agenda_delete, name='agenda_delete'),
 
+     path('user-profile-update', views.user_profile_update, name='user_profile_update'),
 ]

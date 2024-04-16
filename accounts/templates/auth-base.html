@@ -23,66 +23,9 @@
 
   <body>
     <div id="app">
-      <div class="main-wrapper">
-        <div class="navbar-bg"></div>
-        <nav class="navbar navbar-expand-lg main-navbar">
-          <div class="form-inline mr-auto">
-            <ul class="navbar-nav mr-3">
-              <li>
-                <a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a>
-              </li>
-            </ul>
-          </div>
-          <ul class="navbar-nav navbar-right">
-            <li class="dropdown">
-              <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                <img alt="image" src="{% static 'media/img/avatar/avatar-1.png' %}" class="rounded-circle mr-1" />
-                <div class="d-sm-none d-lg-inline-block">
-                  Hi,{% if request.user %}
-                    {{ request.user }}
-                  {% else %}
-                    User
-                  {% endif %}
-                </div>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-title">Logged in {{ request.user.last_login }}</div>
-                <a href="{% url 'user_profile_update' %}" class="dropdown-item has-icon"><i class="far fa-user"></i> Profile</a>
-                <div class="dropdown-divider"></div>
-                <form action="{% url 'logout' %}" method="POST">
-                  {% csrf_token %}
-                  <button type="submit" class="dropdown-item has-icon text-danger small d-flex align-items-center"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                </form>
-                
-              </div>
-            </li>
-          </ul>
-        </nav>
-        <div class="main-sidebar">
-          <aside id="sidebar-wrapper">
-            <div class="sidebar-brand">
-              <a href="#">Mail</a>
-            </div>
-            <div class="sidebar-brand sidebar-brand-sm">
-              <a href="#">M</a>
-            </div>
-            {% include 'menu.html' %}
-          </aside>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-          {% block content %}
-
-          {% endblock %}
-        </div>
-        <footer class="main-footer">
-          <div class="footer-left">
-            Copyright &copy; 2024<div class="bullet"></div>By <a href="https://github.com/Anjasfedo/" target="_blank">Anjasfedo</a>
-          </div>
-          {% comment %} <div class="footer-right">{{ version }}</div> {% endcomment %}
-        </footer>
-      </div>
+      {% block content_auth %}
+        
+      {% endblock content_auth %}
     </div>
 
     <!-- General JS Scripts -->
@@ -93,18 +36,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="{% static 'assets/js/stisla.js' %}"></script>
 
+    
     <!-- Template JS File -->
     <script src="{% static 'assets/js/scripts.js' %}"></script>
     <script src="{% static 'assets/js/custom.js' %}"></script>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+    
     <!-- Page Specific JS File -->
     {% comment %} <script src="{% static 'assets/js/page/bootstrap.modal.js' %}"></script>
     <script src="{% static 'assets/js/jquery.js' %}"></script>
     <script src="{% static 'assets/js/bootstrap.min.js' %}"></script> {% endcomment %}
 
-    {% block page_js %}
-    {% endblock %}
+    {% block page_js %}{% endblock %}
   </body>
 </html>
