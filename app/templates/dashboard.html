@@ -15,52 +15,52 @@
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
           <div class="card card-statistic-1">
             <div class="card-icon bg-primary">
-              <i class="far fa-user"></i>
+              <i class='fas fa-inbox'></i>
             </div>
             <div class="card-wrap">
               <div class="card-header">
                 <h4>Incoming Mail</h4>
               </div>
-              <div class="card-body">10</div>
+              <div class="card-body">{{ total_incoming_mail }}</div>
             </div>
           </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
           <div class="card card-statistic-1">
             <div class="card-icon bg-danger">
-              <i class="far fa-newspaper"></i>
+              <i class='fas fa-sign-out-alt'></i>
             </div>
             <div class="card-wrap">
               <div class="card-header">
                 <h4>Outgoing Mail</h4>
               </div>
-              <div class="card-body">42</div>
+              <div class="card-body">{{ total_outgoing_mail }}</div>
             </div>
           </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
           <div class="card card-statistic-1">
             <div class="card-icon bg-warning">
-              <i class="far fa-file"></i>
+              <i class='fas fa-envelope-open-text'></i>
             </div>
             <div class="card-wrap">
               <div class="card-header">
                 <h4>Incoming Disposition</h4>
               </div>
-              <div class="card-body">1,201</div>
+              <div class="card-body">{{ total_incoming_disposition }}</div>
             </div>
           </div>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
           <div class="card card-statistic-1">
             <div class="card-icon bg-success">
-              <i class="fas fa-circle"></i>
+              <i class='fas fa-mail-bulk'></i>
             </div>
             <div class="card-wrap">
               <div class="card-header">
                 <h4>Outgoing Disposition</h4>
               </div>
-              <div class="card-body">47</div>
+              <div class="card-body">{{ total_outgoing_disposition }}</div>
             </div>
           </div>
         </div>
@@ -68,11 +68,10 @@
 
       <div class="row">
         <div class="col-lg-8 col-md-12 col-12 col-sm-12">
-          <div class="card">
+          <div class="card p-3">
             <div class="card-header">
-              <h4>Agenda Statistics</h4>
-              <div class="card-header-action">
-              </div>
+              <h4>Mail Statistics {{current_year}}</h4>
+              <div class="card-header-action"></div>
             </div>
             <div class="card-body">
               <div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
@@ -86,23 +85,27 @@
               <canvas id="myChart" height="522" width="862" style="display: block; width: 431px; height: 261px;" class="chartjs-render-monitor"></canvas>
               <div class="statistic-details mt-sm-4">
                 <div class="statistic-details-item">
-                  <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span> 7%</span>
-                  <div class="detail-value">$243</div>
+                  <div class="detail-value">
+                    {{total_mails_today }}
+                  </div>
                   <div class="detail-name">Today's</div>
                 </div>
                 <div class="statistic-details-item">
-                  <span class="text-muted"><span class="text-danger"><i class="fas fa-caret-down"></i></span> 23%</span>
-                  <div class="detail-value">$2,902</div>
+                  <div class="detail-value">
+                    {{total_mails_this_week }}
+                  </div>
                   <div class="detail-name">This Week's</div>
                 </div>
                 <div class="statistic-details-item">
-                  <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span>9%</span>
-                  <div class="detail-value">$12,821</div>
+                  <div class="detail-value">
+                    {{total_mails_this_month }}
+                  </div>
                   <div class="detail-name">This Month's</div>
                 </div>
                 <div class="statistic-details-item">
-                  <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span> 19%</span>
-                  <div class="detail-value">$92,142</div>
+                  <div class="detail-value">
+                    {{total_mails_this_year }}
+                  </div>
                   <div class="detail-name">This Year's</div>
                 </div>
               </div>
@@ -117,11 +120,20 @@
             </div>
             <div class="card-body">
               <div class="list-group list-group-flush d-flex flex-wrap flex-row flex-lg-column">
-                <div class="list-group-item">
-                  <div class="avatar-item d-flex justify-content-center mb-0">
-                    <img alt="image" src="{% static 'media/img/avatar/avatar-5.png' %}" width="75" height="75" class="img-fluid" data-toggle="tooltip" title="" data-original-title="Alfa Zulkarnain" />
+                {% for user in users %}
+                  <div class="list-group-item">
+                    <div class="avatar-item d-flex justify-content-center mb-0">
+                      <figure class="avatar avatar-xl">
+                        <img src="{% static 'media/img/avatar/avatar-1.png' %}" alt="{{ user.username }}" class="img-fluid" data-toggle="tooltip" title data-original-title="{{ user.username }}" />
+                        {% comment %} {% if user.is_authenticated %}
+                          <i class="avatar-presence online"></i>
+                        {% else %}
+                          <i class="avatar-presence busy"></i>
+                        {% endif %} {% endcomment %}
+                      </figure>
+                    </div>
                   </div>
-                </div>
+                {% endfor %}
               </div>
             </div>
           </div>
@@ -133,22 +145,28 @@
 
 {% block page_js %}
   <script>
-    var statistics_chart = document.getElementById('myChart').getContext('2d')
+    // Extract data from the context
+    var labels = {{ labels|safe }};
+    var data = {{ data|safe }};
+
+    // Get the chart canvas element
+    var statistics_chart = document.getElementById('myChart').getContext('2d');
     
+    // Create the chart
     var myChart = new Chart(statistics_chart, {
       type: 'line',
       data: {
-        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        labels: labels,  // Use the labels from the context
         datasets: [
           {
-            label: 'Statistics',
-            data: [640, 387, 530, 302, 430, 270, 488],
+            label: 'Mails',
+            data: data,  // Use the data from the context
             borderWidth: 5,
             borderColor: '#6777ef',
             backgroundColor: 'transparent',
             pointBackgroundColor: '#fff',
             pointBorderColor: '#6777ef',
-            pointRadius: 4,
+            pointRadius: 5,
             tension: 0.3
           }
         ]
@@ -156,14 +174,17 @@
       options: {
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
           }
         },
         plugins: {
-          legend: false,
+          legend: false
+        }
       }
-        
-      }
-    })
+    });
   </script>
 {% endblock %}
+

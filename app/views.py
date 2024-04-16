@@ -4,9 +4,14 @@ from django.http import HttpResponse
 from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.conf import settings
 from django.views.decorators.cache import cache_page
+from django.contrib.auth.models import User
+from django.db.models import Count
+from django.db.models.functions import ExtractWeekDay
+from django.utils import timezone
 from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispositionCreateForm, IncomingDispositionUpdateForm, OutgoingDispositionCreateForm, OutgoingDispositionUpdateForm
 from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
 from .resources import IncomingMailResource, OutgoingMailResource, IncomingDispositionResource, OutgoingDispositionResource, IncomingAgendaDetailResource, OutgoingAgendaDetailResource
+import datetime
 
 # Cache Setup
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
@@ -16,8 +21,79 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 # @cache_page(CACHE_TTL)
 def dashboard(request):
+    current_year = datetime.date.today().year
+    today = timezone.now().date()
+    start_of_week = today - timezone.timedelta(days=today.weekday())
+    start_of_month = today.replace(day=1)
+
+    # Data for the chart - Incoming mails by day of the week
+    incoming_mails_by_day = IncomingMail.objects.filter(
+        date__year=current_year
+    ).annotate(
+        day_of_week=ExtractWeekDay('date')
+    ).values(
+        'day_of_week'
+    ).annotate(
+        mail_count=Count('id')
+    )
+
+    # Data for the chart - Outgoing mails by day of the week
+    outgoing_mails_by_day = OutgoingMail.objects.filter(
+        date__year=current_year
+    ).annotate(
+        day_of_week=ExtractWeekDay('date')
+    ).values(
+        'day_of_week'
+    ).annotate(
+        mail_count=Count('id')
+    )
+
+    # Combine the incoming and outgoing mails into one queryset
+    combined_mails_by_day = incoming_mails_by_day.union(outgoing_mails_by_day)
+
+    # Aggregate the counts for each day of the week
+    aggregated_data = {}
+    for entry in combined_mails_by_day:
+        day_of_week = entry['day_of_week']
+        mail_count = entry['mail_count']
+        if day_of_week not in aggregated_data:
+            aggregated_data[day_of_week] = mail_count
+        else:
+            aggregated_data[day_of_week] += mail_count
+
+    # Sort the aggregated data by day of the week
+    sorted_data = sorted(aggregated_data.items(), key=lambda x: x[0])
+
+    # Prepare data for the chart
+    labels = ['Sunday', 'Monday', 'Tuesday',
+              'Wednesday', 'Thursday', 'Friday', 'Saturday']
+    data = [entry[1] for entry in sorted_data]
+    
+     # Calculate total mails for today
+    total_mails_today = IncomingMail.objects.filter(date=today).count() + OutgoingMail.objects.filter(date=today).count()
+
+    # Calculate total mails for this week
+    total_mails_this_week = IncomingMail.objects.filter(date__gte=start_of_week).count() + OutgoingMail.objects.filter(date__gte=start_of_week).count()
+
+    # Calculate total mails for this month
+    total_mails_this_month = IncomingMail.objects.filter(date__gte=start_of_month).count() + OutgoingMail.objects.filter(date__gte=start_of_month).count()
+
+    # Calculate total mails for this year
+    total_mails_this_year = IncomingMail.objects.filter(date__year=current_year).count() + OutgoingMail.objects.filter(date__year=current_year).count()
+
     context = {
-        
+        'users': User.objects.all(),
+        'total_incoming_mail': IncomingMail.objects.count(),
+        'total_outgoing_mail': OutgoingMail.objects.count(),
+        'total_incoming_disposition': IncomingDisposition.objects.count(),
+        'total_outgoing_disposition': OutgoingDisposition.objects.count(),
+        'current_year': current_year,
+        'labels': labels,
+        'data': data,
+        'total_mails_today': total_mails_today,
+        'total_mails_this_week': total_mails_this_week,
+        'total_mails_this_month': total_mails_this_month,
+        'total_mails_this_year': total_mails_this_year,
     }
 
     return render(request, 'dashboard.html', context)
