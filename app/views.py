@@ -19,7 +19,7 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 # Create your views here.
 
 
-# @cache_page(CACHE_TTL)
+@cache_page(CACHE_TTL)
 def dashboard(request):
     current_year = datetime.date.today().year
     today = timezone.now().date()
@@ -68,18 +68,22 @@ def dashboard(request):
     labels = ['Sunday', 'Monday', 'Tuesday',
               'Wednesday', 'Thursday', 'Friday', 'Saturday']
     data = [entry[1] for entry in sorted_data]
-    
-     # Calculate total mails for today
-    total_mails_today = IncomingMail.objects.filter(date=today).count() + OutgoingMail.objects.filter(date=today).count()
+
+    # Calculate total mails for today
+    total_mails_today = IncomingMail.objects.filter(
+        date=today).count() + OutgoingMail.objects.filter(date=today).count()
 
     # Calculate total mails for this week
-    total_mails_this_week = IncomingMail.objects.filter(date__gte=start_of_week).count() + OutgoingMail.objects.filter(date__gte=start_of_week).count()
+    total_mails_this_week = IncomingMail.objects.filter(date__gte=start_of_week).count(
+    ) + OutgoingMail.objects.filter(date__gte=start_of_week).count()
 
     # Calculate total mails for this month
-    total_mails_this_month = IncomingMail.objects.filter(date__gte=start_of_month).count() + OutgoingMail.objects.filter(date__gte=start_of_month).count()
+    total_mails_this_month = IncomingMail.objects.filter(date__gte=start_of_month).count(
+    ) + OutgoingMail.objects.filter(date__gte=start_of_month).count()
 
     # Calculate total mails for this year
-    total_mails_this_year = IncomingMail.objects.filter(date__year=current_year).count() + OutgoingMail.objects.filter(date__year=current_year).count()
+    total_mails_this_year = IncomingMail.objects.filter(date__year=current_year).count(
+    ) + OutgoingMail.objects.filter(date__year=current_year).count()
 
     context = {
         'users': User.objects.all(),
@@ -99,7 +103,6 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
-@cache_page(CACHE_TTL)
 def incoming_mail(request):
     form = IncomingMailForm(request.user)
 
@@ -158,7 +161,6 @@ def incoming_mail_export(request):
     return response
 
 
-@cache_page(CACHE_TTL)
 def outgoing_mail(request):
     form = OutgoingMailForm(request.user)
 
@@ -217,7 +219,6 @@ def outgoing_mail_export(request):
     return response
 
 
-@cache_page(CACHE_TTL)
 def incoming_disposition(request):
     form = IncomingDispositionCreateForm(request.user)
 
@@ -275,7 +276,6 @@ def incoming_disposition_export(request):
     return response
 
 
-@cache_page(CACHE_TTL)
 def outgoing_disposition(request):
     form = OutgoingDispositionCreateForm(request.user)
 
@@ -335,7 +335,6 @@ def outgoing_disposition_export(request):
     return response
 
 
-@cache_page(CACHE_TTL)
 def agenda(request):
     form = AgendaForm()
 
@@ -353,7 +352,6 @@ def agenda(request):
     return render(request, 'agenda.html', context)
 
 
-@cache_page(CACHE_TTL)
 def agenda_detail(request, pk):
     incoming_mails = IncomingMail.objects.filter(agenda_id=pk)
     incoming_dispositions = IncomingDisposition.objects.filter(

@@ -15,7 +15,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
           <div class="card card-statistic-1">
             <div class="card-icon bg-primary">
-              <i class='fas fa-inbox'></i>
+              <i class="fas fa-inbox"></i>
             </div>
             <div class="card-wrap">
               <div class="card-header">
@@ -28,7 +28,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
           <div class="card card-statistic-1">
             <div class="card-icon bg-danger">
-              <i class='fas fa-sign-out-alt'></i>
+              <i class="fas fa-sign-out-alt"></i>
             </div>
             <div class="card-wrap">
               <div class="card-header">
@@ -41,7 +41,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
           <div class="card card-statistic-1">
             <div class="card-icon bg-warning">
-              <i class='fas fa-envelope-open-text'></i>
+              <i class="fas fa-envelope-open-text"></i>
             </div>
             <div class="card-wrap">
               <div class="card-header">
@@ -54,7 +54,7 @@
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
           <div class="card card-statistic-1">
             <div class="card-icon bg-success">
-              <i class='fas fa-mail-bulk'></i>
+              <i class="fas fa-mail-bulk"></i>
             </div>
             <div class="card-wrap">
               <div class="card-header">
@@ -70,7 +70,7 @@
         <div class="col-lg-8 col-md-12 col-12 col-sm-12">
           <div class="card p-3">
             <div class="card-header">
-              <h4>Mail Statistics {{current_year}}</h4>
+              <h4>Mail Statistics {{ current_year }}</h4>
               <div class="card-header-action"></div>
             </div>
             <div class="card-body">
@@ -85,27 +85,19 @@
               <canvas id="myChart" height="522" width="862" style="display: block; width: 431px; height: 261px;" class="chartjs-render-monitor"></canvas>
               <div class="statistic-details mt-sm-4">
                 <div class="statistic-details-item">
-                  <div class="detail-value">
-                    {{total_mails_today }}
-                  </div>
+                  <div class="detail-value">{{ total_mails_today }}</div>
                   <div class="detail-name">Today's</div>
                 </div>
                 <div class="statistic-details-item">
-                  <div class="detail-value">
-                    {{total_mails_this_week }}
-                  </div>
+                  <div class="detail-value">{{ total_mails_this_week }}</div>
                   <div class="detail-name">This Week's</div>
                 </div>
                 <div class="statistic-details-item">
-                  <div class="detail-value">
-                    {{total_mails_this_month }}
-                  </div>
+                  <div class="detail-value">{{ total_mails_this_month }}</div>
                   <div class="detail-name">This Month's</div>
                 </div>
                 <div class="statistic-details-item">
-                  <div class="detail-value">
-                    {{total_mails_this_year }}
-                  </div>
+                  <div class="detail-value">{{ total_mails_this_year }}</div>
                   <div class="detail-name">This Year's</div>
                 </div>
               </div>
@@ -187,4 +179,3 @@
     });
   </script>
 {% endblock %}
-

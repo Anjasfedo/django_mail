@@ -38,7 +38,7 @@ class Agenda(models.Model):
     '''Model definition for Agenda.'''
 
     year = models.IntegerField(
-        validators=[MinValueValidator(2000), max_value_current_year], unique=True)
+        validators=[MinValueValidator(1984), max_value_current_year], unique=True)
 
     class Meta:
         '''Meta definition for Agenda.'''
