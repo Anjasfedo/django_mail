@@ -14,22 +14,15 @@ CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 # Create your views here.
 
+
 @cache_page(CACHE_TTL)
 def dashboard(request):
-    products = []
-    for i in range(1, 10000):
-        product = {
-            'name': f'Product {i}',
-            'price': 10 * i  # Just an example, you can generate prices dynamically
-        }
-        products.append(product)
-
-    # Pass the data to the context dictionary
     context = {
-        'products': products
+
     }
 
     return render(request, 'dashboard.html', context)
+
 
 @cache_page(CACHE_TTL)
 def incoming_mail(request):
@@ -90,6 +83,7 @@ def incoming_mail_export(request):
     return response
 
 
+@cache_page(CACHE_TTL)
 def outgoing_mail(request):
     form = OutgoingMailForm(request.user)
 
@@ -148,6 +142,7 @@ def outgoing_mail_export(request):
     return response
 
 
+@cache_page(CACHE_TTL)
 def incoming_disposition(request):
     form = IncomingDispositionCreateForm(request.user)
 
@@ -205,6 +200,7 @@ def incoming_disposition_export(request):
     return response
 
 
+@cache_page(CACHE_TTL)
 def outgoing_disposition(request):
     form = OutgoingDispositionCreateForm(request.user)
 
@@ -264,6 +260,7 @@ def outgoing_disposition_export(request):
     return response
 
 
+@cache_page(CACHE_TTL)
 def agenda(request):
     form = AgendaForm()
 
@@ -281,6 +278,7 @@ def agenda(request):
     return render(request, 'agenda.html', context)
 
 
+@cache_page(CACHE_TTL)
 def agenda_detail(request, pk):
     incoming_mails = IncomingMail.objects.filter(agenda_id=pk)
     incoming_dispositions = IncomingDisposition.objects.filter(
