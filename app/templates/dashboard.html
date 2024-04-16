@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
 
 {% block content %}
   <section class="section">
@@ -9,23 +10,160 @@
         <div class="breadcrumb-item active">Dashboard</div>
       </div>
     </div>
-
     <div class="section-body">
-      <h2 class="section-title">Dashboard</h2>
-      <p class="section-lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis et velit recusandae ea incidunt non quo quod culpa vel voluptatem commodi enim aspernatur quis libero distinctio, voluptatibus beatae iure accusamus!</p>
+      <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+          <div class="card card-statistic-1">
+            <div class="card-icon bg-primary">
+              <i class="far fa-user"></i>
+            </div>
+            <div class="card-wrap">
+              <div class="card-header">
+                <h4>Incoming Mail</h4>
+              </div>
+              <div class="card-body">10</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+          <div class="card card-statistic-1">
+            <div class="card-icon bg-danger">
+              <i class="far fa-newspaper"></i>
+            </div>
+            <div class="card-wrap">
+              <div class="card-header">
+                <h4>Outgoing Mail</h4>
+              </div>
+              <div class="card-body">42</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+          <div class="card card-statistic-1">
+            <div class="card-icon bg-warning">
+              <i class="far fa-file"></i>
+            </div>
+            <div class="card-wrap">
+              <div class="card-header">
+                <h4>Incoming Disposition</h4>
+              </div>
+              <div class="card-body">1,201</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+          <div class="card card-statistic-1">
+            <div class="card-icon bg-success">
+              <i class="fas fa-circle"></i>
+            </div>
+            <div class="card-wrap">
+              <div class="card-header">
+                <h4>Outgoing Disposition</h4>
+              </div>
+              <div class="card-body">47</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div class="row">
-        <div class="col-12">
+        <div class="col-lg-8 col-md-12 col-12 col-sm-12">
           <div class="card">
             <div class="card-header">
-              <h4>Advanced Table</h4>
-
+              <h4>Agenda Statistics</h4>
+              <div class="card-header-action">
+              </div>
             </div>
-            <div class="card-body p-3">
+            <div class="card-body">
+              <div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                  <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                </div>
+                <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                  <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                </div>
+              </div>
+              <canvas id="myChart" height="522" width="862" style="display: block; width: 431px; height: 261px;" class="chartjs-render-monitor"></canvas>
+              <div class="statistic-details mt-sm-4">
+                <div class="statistic-details-item">
+                  <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span> 7%</span>
+                  <div class="detail-value">$243</div>
+                  <div class="detail-name">Today's</div>
+                </div>
+                <div class="statistic-details-item">
+                  <span class="text-muted"><span class="text-danger"><i class="fas fa-caret-down"></i></span> 23%</span>
+                  <div class="detail-value">$2,902</div>
+                  <div class="detail-name">This Week's</div>
+                </div>
+                <div class="statistic-details-item">
+                  <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span>9%</span>
+                  <div class="detail-value">$12,821</div>
+                  <div class="detail-name">This Month's</div>
+                </div>
+                <div class="statistic-details-item">
+                  <span class="text-muted"><span class="text-primary"><i class="fas fa-caret-up"></i></span> 19%</span>
+                  <div class="detail-value">$92,142</div>
+                  <div class="detail-name">This Year's</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12 col-12 col-sm-12">
+          <div class="card w-100">
+            <div class="card-header">
+              <h4>Users</h4>
+            </div>
+            <div class="card-body">
+              <div class="list-group list-group-flush d-flex flex-wrap flex-row flex-lg-column">
+                <div class="list-group-item">
+                  <div class="avatar-item d-flex justify-content-center mb-0">
+                    <img alt="image" src="{% static 'media/img/avatar/avatar-5.png' %}" width="75" height="75" class="img-fluid" data-toggle="tooltip" title="" data-original-title="Alfa Zulkarnain" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </section>
+{% endblock %}
+
+{% block page_js %}
+  <script>
+    var statistics_chart = document.getElementById('myChart').getContext('2d')
+    
+    var myChart = new Chart(statistics_chart, {
+      type: 'line',
+      data: {
+        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        datasets: [
+          {
+            label: 'Statistics',
+            data: [640, 387, 530, 302, 430, 270, 488],
+            borderWidth: 5,
+            borderColor: '#6777ef',
+            backgroundColor: 'transparent',
+            pointBackgroundColor: '#fff',
+            pointBorderColor: '#6777ef',
+            pointRadius: 4,
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+          legend: false,
+      }
+        
+      }
+    })
+  </script>
 {% endblock %}
