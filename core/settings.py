@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'import_export',
         
     'app',
-    'user',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -56,7 +56,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'user.middleware.IsAuthPageMiddleware'
+    # 'accounts.middleware.IsAuthPageMiddleware',
+    'accounts.middleware.RedirectAuthenticatedUserMiddleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -115,9 +116,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
+
+USE_L10N = True
 
 USE_TZ = True
 
@@ -147,3 +150,38 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 # Import Export
 
 IMPORT_EXPORT_USE_TRANSACTIONS = True
+
+# SMTP
+
+# EMAIL_HOST = 
+
+# EMAIL_HOST_USER = 
+
+# EMAIL_HOST_PASSWORD = 
+
+# EMAIL_PORT = 
+
+# Redis Cache
+
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://127.0.0.1:6379/2",
+#             "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient"
+#         },
+#         "KEY_PREFIX": "django_mail"
+#     }
+# }
+
+# CACHE_TTL = 60 * 15
+
+# Auth Redirect
+
+LOGIN_REDIRECT_URL = 'dashboard'
+
+LOGOUT_REDIRECT_URL = 'login'
+
+# Session Cookie
+
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 1

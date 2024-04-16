@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'auth-base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block content_2 %}
+{% block content_auth %}
   <section class="section">
     <div class="d-flex flex-wrap align-items-stretch">
       <div class="col-lg-4 col-md-6 col-12 order-lg-1 min-vh-100 order-2 bg-white">
@@ -9,7 +9,18 @@
           <img src="{% static '/media/img/stisla-fill.svg' %}" alt="logo" width="80" class="shadow-light rounded-circle mb-5 mt-2" />
           <h4 class="text-dark font-weight-normal">Welcome to <span class="font-weight-bold">Mail</span></h4>
           <p class="text-muted">Before you get started, you must login.</p>
-          {% crispy form %}
+          <form action="" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="form-group text-right">
+              <a href="{% url 'reset_password' %}" class="float-left mt-3">
+                Forgot Password?
+              </a>
+              <button type="submit" class="btn btn-primary btn-lg btn-icon icon-right" tabindex="4">
+                Login
+              </button>
+            </div>
+          </form>
           <div class="text-center mt-5 text-small">Copyright &copy; Anjasfedo. Made with 💙 by Stisla</div>
         </div>
       </div>

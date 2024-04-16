@@ -31,9 +31,9 @@ urlpatterns = [
 
     path('outgoing-disposition/', views.outgoing_disposition,
          name='outgoing_disposition'),
-    path('outgoing-disposition-update//<int:pk>/', views.outgoing_disposition_update,
+    path('outgoing-disposition-update/<int:pk>/', views.outgoing_disposition_update,
          name='outgoing_disposition_update'),
-    path('outgoing-disposition-delete//<int:pk>/', views.outgoing_disposition_delete,
+    path('outgoing-disposition-delete/<int:pk>/', views.outgoing_disposition_delete,
          name='outgoing_disposition_delete'),
     path('outgoing-disposition-export', views.outgoing_disposition_export,
          name='outgoing_disposition_export'),
@@ -46,4 +46,5 @@ urlpatterns = [
          views.agenda_detail_outgoing_export, name='agenda_detail_outgoing_export'),
     path('agenda-delete/<int:pk>/', views.agenda_delete, name='agenda_delete'),
 
+     path('user-profile-update', views.user_profile_update, name='user_profile_update'),
 ]
