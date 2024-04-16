@@ -157,3 +157,18 @@ IMPORT_EXPORT_USE_TRANSACTIONS = True
 # EMAIL_HOST_PASSWORD = 
 
 # EMAIL_PORT = 
+
+# Redis Cache
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+            "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "django_mail"
+    }
+}
+
+CACHE_TTL = 60 * 15

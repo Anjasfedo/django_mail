@@ -1,22 +1,37 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.http import HttpResponse
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.conf import settings
+from django.views.decorators.cache import cache_page
 from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispositionCreateForm, IncomingDispositionUpdateForm, OutgoingDispositionCreateForm, OutgoingDispositionUpdateForm
 from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
 from .resources import IncomingMailResource, OutgoingMailResource, IncomingDispositionResource, OutgoingDispositionResource, IncomingAgendaDetailResource, OutgoingAgendaDetailResource
 
+
+# Cache Setup
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
 # Create your views here.
 
-
+@cache_page(CACHE_TTL)
 def dashboard(request):
+    products = []
+    for i in range(1, 10000):
+        product = {
+            'name': f'Product {i}',
+            'price': 10 * i  # Just an example, you can generate prices dynamically
+        }
+        products.append(product)
+
+    # Pass the data to the context dictionary
     context = {
-        # 'forms': [AgendaForm(), IncomingMailForm(), OutgoingMailForm(), IncomingDispositionForm(), OutgoingDispositionForm()]
-        'agendas':  Agenda.objects.all()
+        'products': products
     }
 
     return render(request, 'dashboard.html', context)
 
-
+@cache_page(CACHE_TTL)
 def incoming_mail(request):
     form = IncomingMailForm(request.user)
 
