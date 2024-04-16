@@ -1,10 +1,11 @@
-from django.urls import path
+from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
+from .forms import UserLoginForm
 from . import views
 
 urlpatterns = [
-    path('login/', views.user_login, name='user_login'),
-    path('logout/', views.user_logout, name='user_logout'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     
     path('reset-password/', auth_views.PasswordResetView.as_view(
         template_name='reset_password.html'), name='reset_password'),
@@ -14,4 +15,9 @@ urlpatterns = [
         template_name='reset_password_confirm.html'), name='password_reset_confirm'),
     path('reset-password-complete/', auth_views.PasswordResetCompleteView.as_view(
         template_name='reset_password_complete.html'), name='password_reset_complete'),
+    
+    path('user-profile-update', views.user_profile_update, name='user_profile_update'),
+    
+    path('password-change/', auth_views.PasswordChangeView.as_view(
+        template_name='password_change.html', success_url=reverse_lazy('login')), name='password_change'),
 ]

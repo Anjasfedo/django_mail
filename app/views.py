@@ -8,17 +8,16 @@ from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispo
 from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
 from .resources import IncomingMailResource, OutgoingMailResource, IncomingDispositionResource, OutgoingDispositionResource, IncomingAgendaDetailResource, OutgoingAgendaDetailResource
 
-
 # Cache Setup
 CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
 # Create your views here.
 
 
-@cache_page(CACHE_TTL)
+# @cache_page(CACHE_TTL)
 def dashboard(request):
     context = {
-
+        
     }
 
     return render(request, 'dashboard.html', context)

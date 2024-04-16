@@ -8,7 +8,7 @@ class IsAuthPageMiddleware:
 
     def process_template_response(self, request, response):
         # List of authentication-related URLs
-        auth_urls = ['/reset-password/',
+        auth_urls = ['/login/', '/logout/', '/reset-password/',
                      '/reset-password-done/', '/reset-password-complete/', '/reset/']
 
         # Check if the current path is an authentication page

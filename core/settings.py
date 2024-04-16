@@ -115,9 +115,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
+
+USE_L10N = True
 
 USE_TZ = True
 
@@ -172,3 +174,13 @@ CACHES = {
 }
 
 CACHE_TTL = 60 * 15
+
+# Auth Redirect
+
+LOGIN_REDIRECT_URL = 'dashboard'
+
+LOGOUT_REDIRECT_URL = 'login'
+
+# Session Cookie
+
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 1
