@@ -15,7 +15,7 @@ from .forms import AgendaForm, IncomingMailForm, OutgoingMailForm, IncomingDispo
 from .models import Agenda, IncomingMail, OutgoingMail, IncomingDisposition, OutgoingDisposition
 from .resources import IncomingMailResource, OutgoingMailResource, IncomingDispositionResource, OutgoingDispositionResource, IncomingAgendaDetailResource, OutgoingAgendaDetailResource
 import datetime
-
+from django.contrib.auth.decorators import permission_required
 # Cache Setup
 # CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
 
@@ -338,6 +338,7 @@ def outgoing_disposition_export(request):
     return response
 
 @login_required
+@permission_required('app.view_agenda', login_url='/incoming-mail', raise_exception=True) 
 def agenda(request):
     form = AgendaForm()
 
