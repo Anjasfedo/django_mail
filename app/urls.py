@@ -1,7 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from rest_framework import routers
+router = routers.DefaultRouter()
+router.register(r'agendas', views.AgendaViewSet)
 
 urlpatterns = [
+    path('api/', include(router.urls)),
     path('', views.dashboard, name='dashboard'),
 
     path('incoming-mail/', views.incoming_mail, name='incoming_mail'),
@@ -46,5 +50,6 @@ urlpatterns = [
          views.agenda_detail_outgoing_export, name='agenda_detail_outgoing_export'),
     path('agenda-delete/<int:pk>/', views.agenda_delete, name='agenda_delete'),
 
-     path('user-profile-update', views.user_profile_update, name='user_profile_update'),
+    path('user-profile-update', views.user_profile_update,
+         name='user_profile_update'),
 ]

@@ -337,6 +337,12 @@ def outgoing_disposition_export(request):
 
     return response
 
+from rest_framework import viewsets
+from .serializers import AgendaSerializer
+class AgendaViewSet(viewsets.ModelViewSet):
+    queryset = Agenda.objects.all()
+    serializer_class = AgendaSerializer
+
 @login_required
 @permission_required('app.view_agenda', login_url='/incoming-mail', raise_exception=True) 
 def agenda(request):
